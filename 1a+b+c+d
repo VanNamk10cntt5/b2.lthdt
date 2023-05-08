@@ -1,0 +1,211 @@
+public class Account {
+    private long accNumber;
+    private String accName;
+    private double balance;
+    private String status;
+    private static final double INTEREST_RATE = 0.035;
+
+    public Account() {
+        this.accNumber = 999999;
+        this.accName = "Chưa xác định";
+        this.balance = 50;
+        this.status = "";
+    }
+
+    public Account(long accNumber, String accName, double balance) {
+        if (accNumber > 0 && accNumber != 999999 && !accName.isEmpty() && balance >= 50) {
+            this.accNumber = accNumber;
+            this.accName = accName;
+            this.balance = balance;
+            this.status = "";
+        } else {
+            this.accNumber = 999999;
+            this.accName = "Chưa xác định";
+            this.balance = 50;
+            this.status = "Giá trị tham số không hợp lệ!";
+        }
+    }
+
+    public long getAccNumber() {
+        return accNumber;
+    }
+
+    public void setAccNumber(long accNumber) {
+        if (accNumber > 0 && accNumber != 999999) {
+            this.accNumber = accNumber;
+        } else {
+            this.status += "\nSố tài khoản không hợp lệ!";
+        }
+    }
+
+    public String getAccName() {
+        return accName;
+    }
+
+    public void setAccName(String accName) {
+        if (!accName.isEmpty()) {
+            this.accName = accName;
+        } else {
+            this.status += "\nTên tài khoản không hợp lệ!";
+        }
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        if (balance >= 50) {
+            this.balance = balance;
+        } else {
+            this.status += "\nSố tiền trong tài khoản không hợp lệ!";
+        }
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public static double getInterestRate() {
+        return INTEREST_RATE;
+    }
+
+    public void deposit(double amount) {
+        this.balance += amount;
+    }
+
+    public void withdraw(double amount) {
+        if (this.balance >= amount) {
+            this.balance -= amount;
+        } else {
+            this.status += "\nSố tiền trong tài khoản không đủ để rút!";
+        }
+    }
+
+    public void transfer(Account other, double amount) {
+        if (this.balance >= amount) {
+            this.balance -= amount;
+            other.balance += amount;
+        } else {
+            this.status += "\nSố tiền trong tài khoản không đủ để chuyển khoản!";
+        }
+    }
+
+    public void accrueInterest() {
+        double interest = this.balance * INTEREST_RATE;
+        this.balance += interest;
+    }
+
+    @Override
+    public String toString() {
+        return "Số tài khoản: " + accNumber +
+                ", Tên tài khoản: " + accName +
+                ", Số tiền trong tài khoản: " + balance +
+                ", Trạng thái: " + status;
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        // Khởi tạo danh sách các tài khoản
+        AccountList accList = new AccountList();
+
+        // Thêm tài khoản vào danh sách
+        accList.addAccount(new Account(123456, "Nguyen Van A", 5000));
+        accList.addAccount(new Account(789012, "Tran Thi B", 10000));
+
+        // Hiển thị thông tin tài khoản
+        System.out.println("Danh sách tài khoản:");
+        accList.printAccounts();
+
+        // Tìm tài khoản theo số tài khoản
+        Account acc = accList.findAccount(123456);
+        System.out.println("Tài khoản cần tìm:");
+        System.out.println(acc);
+
+        // Xóa tài khoản khỏi danh sách
+        accList.deleteAccount(789012);
+        System.out.println("Danh sách tài khoản sau khi xóa:");
+        accList.printAccounts();
+
+        // Thực hiện giao dịch cho một tài khoản
+        acc.deposit(2000);
+        acc.withdraw(500);
+        acc.transfer(123456, 500);
+        System.out.println("Thông tin tài khoản sau khi giao dịch:");
+        System.out.println(acc);
+
+        // Hiển thị thông tin toàn bộ tài khoản trong danh sách
+        System.out.println("Danh sách tài khoản sau khi giao dịch:");
+        accList.printAccounts();
+    }
+    //phan nay chay dc con phan duoi chua xong a
+    
+    
+    
+    
+public class AccountTest {
+
+    public static void main(String[] args) {
+        AccountList list = new AccountList(); // khởi tạo một đối tượng AccountList mới
+        
+        Scanner input = new Scanner(System.in);
+        int choice = 0;
+        do {
+            System.out.println("\n===== MENU =====");
+            System.out.println("1. Thêm tài khoản");
+            System.out.println("2. Số tài khoản hiện có");
+            System.out.println("3. In thông tin tất cả tài khoản");
+            System.out.println("4. Nạp tiền vào tài khoản");
+            System.out.println("5. Rút tiền");
+            System.out.println("6. Chuyển tiền");
+            System.out.println("7. Kết thúc");
+
+            System.out.print("Chọn chức năng (1-7): ");
+            choice = input.nextInt();
+
+            switch (choice) {
+                case 1: // Thêm tài khoản
+                    System.out.print("Nhập số tài khoản: ");
+                    long accNumber = input.nextLong();
+                    System.out.print("Nhập tên tài khoản: ");
+                    String accName = input.next();
+                    Account acc = new Account(accNumber, accName);
+                    list.addAccount(acc);
+                    System.out.println("Thêm tài khoản thành công!");
+                    break;
+                case 2: // Số tài khoản hiện có
+                    int count = list.getNumOfAccounts();
+                    System.out.println("Số tài khoản hiện có: " + count);
+                    break;
+                case 3: // In thông tin tất cả tài khoản
+                    list.printAllAccounts();
+                    break;
+                case 4: // Nạp tiền vào tài khoản
+                    System.out.print("Nhập số tài khoản cần nạp tiền: ");
+                    accNumber = input.nextLong();
+                    System.out.print("Nhập số tiền cần nạp: ");
+                    double amount = input.nextDouble();
+                    if (list.deposit(accNumber, amount)) {
+                        System.out.println("Nạp tiền thành công!");
+                    } else {
+                        System.out.println("Không tìm thấy tài khoản có số tài khoản là " + accNumber);
+                    }
+                    break;
+                case 5: // Rút tiền
+                    System.out.print("Nhập số tài khoản cần rút tiền: ");
+                    accNumber = input.nextLong();
+                    System.out.print("Nhập số tiền cần rút: ");
+                    amount = input.nextDouble();
+                    if (list.withdraw(accNumber, amount)) {
+                        System.out.println("Rút tiền thành công!");
+                    } else {
+                        System.out.println("Không tìm thấy tài khoản có số tài khoản là " + accNumber);
+                    }
+                    break;
+                case 6: // Chuyển tiền
+                    System.out.print("Nhập số tài khoản nguồn: ");
+                    long fromAccNumber = input.ne
